@@ -10,9 +10,9 @@ export function WorkflowFeedback() {
 
   return (
     <Card className="p-5">
-      <h2 className="text-lg font-semibold text-zinc-950">Did this workflow help?</h2>
+      <h2 className="text-lg font-semibold text-zinc-950">Did this run work?</h2>
       <p className="mt-2 text-sm leading-6 text-zinc-600">
-        Feedback is local for now. Submission tracking will be connected in a later phase.
+        Feedback stays local for now. Submission tracking will be connected in a later phase.
       </p>
       <div className="mt-4 flex flex-col gap-3 sm:flex-row">
         <Button onClick={() => setFeedback("worked")} variant="secondary">

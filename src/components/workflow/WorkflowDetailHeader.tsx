@@ -12,14 +12,14 @@ type WorkflowDetailHeaderProps = {
 export function WorkflowDetailHeader({ workflow }: WorkflowDetailHeaderProps) {
   return (
     <div className="border-b border-zinc-200 bg-white">
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 py-9 sm:px-6 lg:px-8">
         <p className="text-sm font-semibold uppercase tracking-wide text-teal-800">
-          {workflow.category}
+          Workflow runbook / {workflow.category}
         </p>
-        <h1 className="mt-3 max-w-4xl text-3xl font-semibold tracking-tight text-zinc-950 sm:text-5xl">
+        <h1 className="mt-3 max-w-4xl text-3xl font-semibold tracking-tight text-zinc-950 sm:text-4xl">
           {workflow.title}
         </h1>
-        <p className="mt-5 max-w-3xl text-lg leading-8 text-zinc-600">
+        <p className="mt-4 max-w-3xl text-base leading-7 text-zinc-600 sm:text-lg">
           {workflow.description}
         </p>
         <div className="mt-6 flex flex-wrap gap-2">

@@ -11,7 +11,7 @@ export default function RequestPage() {
       <section className="border-b border-zinc-200 bg-white">
         <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
           <SectionHeader
-            description="Tell us what workflow would help. This is static UI only in Phase 2; submissions will be connected later."
+            description="Describe the runbook you wish existed. This is static UI only in this phase; submissions will be connected later."
             eyebrow="Request a workflow"
             title="What do you wish WorknFlow had?"
           />

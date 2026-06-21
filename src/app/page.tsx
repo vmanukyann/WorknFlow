@@ -2,6 +2,9 @@ import Link from "next/link";
 
 import { PageShell } from "@/components/layout/PageShell";
 import { SectionHeader } from "@/components/layout/SectionHeader";
+import { FreshnessBadge } from "@/components/badges/FreshnessBadge";
+import { LearningSafeBadge } from "@/components/badges/LearningSafeBadge";
+import { PlatformBadge } from "@/components/badges/PlatformBadge";
 import { buttonClassName } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { WorkflowGrid } from "@/components/workflow/WorkflowGrid";
@@ -9,9 +12,9 @@ import { sampleWorkflows } from "@/data/sampleWorkflows";
 
 const valueCards = [
   {
-    title: "Context before prompts",
+    title: "Start with context",
     description:
-      "Each workflow starts with what to gather, what to disclose, and what the AI should avoid guessing.",
+      "Each workflow says what to gather first, what the AI should know, and what it should not guess.",
   },
   {
     title: "Real example outputs",
@@ -34,23 +37,25 @@ const categories = [
 ];
 
 export default function HomePage() {
+  const featuredWorkflow = sampleWorkflows[0];
+
   return (
     <PageShell>
       <section className="border-b border-zinc-200 bg-white">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-24">
+        <div className="mx-auto grid max-w-6xl gap-9 px-4 py-14 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8 lg:py-16">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-teal-800">
-              Verified AI workflows
+              Verified workflow runbooks
             </p>
-            <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-zinc-950 sm:text-6xl">
+            <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-zinc-950 sm:text-5xl">
               Find tested AI workflows that actually show the result.
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-600">
-              WorknFlow pairs context setup, prompt steps, example outputs,
-              freshness status, and quality checklists so you can use AI with
-              more trust and better judgment.
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-600">
+              Find the exact AI workflow you need, see proof it works, and judge
+              the result before trusting it. Each runbook includes setup,
+              prompt steps, example output, freshness, and checks.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link className={buttonClassName("primary")} href="/workflows">
                 Browse workflows
               </Link>
@@ -59,33 +64,57 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          <Card className="self-center p-5">
-            <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-              <p className="text-sm font-medium text-zinc-500">Search workflows</p>
-              <p className="mt-2 rounded-lg border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-500">
-                study guide for messy notes
+          <Card className="self-center overflow-hidden">
+            <div className="border-b border-zinc-200 bg-zinc-50 px-5 py-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                Workflow record preview
               </p>
             </div>
-            <div className="mt-5 space-y-3">
-              {sampleWorkflows.map((workflow) => (
-                <div
-                  className="rounded-lg border border-zinc-200 bg-white p-4"
-                  key={workflow.id}
-                >
-                  <p className="text-sm font-semibold text-zinc-950">
-                    {workflow.title}
-                  </p>
-                  <p className="mt-1 text-xs text-zinc-500">
-                    {workflow.steps.length} prompt steps · {workflow.freshnessStatus}
-                  </p>
+            <div className="p-5">
+              <div className="flex flex-wrap gap-2">
+                <FreshnessBadge status={featuredWorkflow.freshnessStatus} />
+                <LearningSafeBadge mode={featuredWorkflow.learningSafeMode} />
+                <PlatformBadge platform={featuredWorkflow.platformTestedOn} />
+              </div>
+              <h2 className="mt-4 text-xl font-semibold leading-7 text-zinc-950">
+                {featuredWorkflow.title}
+              </h2>
+              <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
+                <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3">
+                  <dt className="font-medium text-zinc-500">Prompt steps</dt>
+                  <dd className="mt-1 font-semibold text-zinc-950">
+                    {featuredWorkflow.steps.length}
+                  </dd>
                 </div>
-              ))}
+                <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3">
+                  <dt className="font-medium text-zinc-500">Verified</dt>
+                  <dd className="mt-1 font-semibold text-zinc-950">
+                    {featuredWorkflow.lastVerifiedAt}
+                  </dd>
+                </div>
+              </dl>
+              <div className="mt-5 border-t border-zinc-100 pt-5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                  Context setup
+                </p>
+                <p className="mt-2 line-clamp-3 text-sm leading-6 text-zinc-600">
+                  {featuredWorkflow.contextSetup}
+                </p>
+              </div>
+              <div className="mt-5 border-t border-zinc-100 pt-5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                  Quality check
+                </p>
+                <p className="mt-2 text-sm leading-6 text-zinc-700">
+                  {featuredWorkflow.qualityChecklist[0]}
+                </p>
+              </div>
             </div>
           </Card>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         <SectionHeader
           description="A workflow should make the process inspectable, not hide the important parts in a single magic prompt."
           title="Built for judgment, not blind copy-paste"
@@ -102,8 +131,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+      <section className="border-y border-zinc-200 bg-white">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <SectionHeader
               description="Start with three manually written, manually verified workflows from the hardcoded sample data."
@@ -119,7 +148,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         <SectionHeader
           description="The library is small in this phase, but the structure supports practical school and builder tasks."
           title="Browse by category"
@@ -127,7 +156,7 @@ export default function HomePage() {
         <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {categories.map((category) => (
             <Card
-              className="p-4 text-sm font-semibold text-zinc-800"
+              className="border-dashed p-4 text-sm font-semibold text-zinc-800"
               key={category}
             >
               {category}
@@ -137,7 +166,7 @@ export default function HomePage() {
       </section>
 
       <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
           <Card className="p-6 sm:p-8">
             <p className="text-sm font-semibold uppercase tracking-wide text-teal-800">
               Academic integrity

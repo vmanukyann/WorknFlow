@@ -17,7 +17,7 @@ export function EmptyState({
   actionLabel,
 }: EmptyStateProps) {
   return (
-    <Card className="p-8 text-center">
+    <Card className="border-dashed p-8 text-center">
       <h2 className="text-lg font-semibold text-zinc-950">{title}</h2>
       <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-zinc-600">
         {description}
