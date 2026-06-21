@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WorknFlow
 
-## Getting Started
+WorknFlow is a verified AI workflow system. Every workflow is expected to include context setup, prompt steps, example inputs and outputs, freshness status, and a quality checklist so users can judge whether the result is trustworthy.
 
-First, run the development server:
+`PROJECT_RULES.md` is the source of truth for product scope, design rules, security rules, workflow schema, phase map, and Codex operating rules.
+
+## Current Phase
+
+This repo is currently in Phase 1: project foundation.
+
+Included in this phase:
+
+- Next.js, TypeScript, Tailwind CSS, and App Router setup
+- Foundation folders
+- Core workflow TypeScript types
+- Hardcoded sample workflow data
+- Lightweight status/design tokens
+
+Not included in this phase:
+
+- Product homepage UI
+- Workflow cards or workflow detail pages
+- Supabase client code or database wiring
+- Auth
+- Payments
+- Chrome extension work
+- AI API calls
+
+## Run Locally
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Check code quality:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build
+```
 
-## Learn More
+## Environment
 
-To learn more about Next.js, take a look at the following resources:
+Copy `.env.local.example` to `.env.local` for local environment variables. Supabase placeholders are present for later phases only.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Rules
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Before adding or changing features, read `PROJECT_RULES.md`. Do not add Supabase, auth, payments, extension code, marketplace features, saved workflows, creator submissions, or AI API calls in Phase 1.
