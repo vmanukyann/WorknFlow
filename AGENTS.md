@@ -1,5 +1,22 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+# Agent Instructions
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+Before making any changes, read `PROJECT_RULES.md`.
+
+`PROJECT_RULES.md` is the source of truth for:
+- Product scope
+- Forbidden MVP features
+- Design rules
+- Security rules
+- Workflow schema
+- Phase map
+- Codex operating rules
+
+Do not add features outside the current requested phase.
+
+Always explain your plan before editing files.
+
+After editing, run:
+- `npm run lint`
+- `npm run build`
+
+If either command fails, fix the issue before finishing.
