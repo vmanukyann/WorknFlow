@@ -1,31 +1,27 @@
 "use client";
 
-import type { Difficulty, FreshnessStatus } from "@/types/workflow";
+type FilterKey =
+  | "audience"
+  | "category"
+  | "difficulty"
+  | "freshness"
+  | "platform"
+  | "safety";
+
+type FilterValues = Record<FilterKey, string>;
 
 type WorkflowFiltersProps = {
+  audiences: string[];
   categories: string[];
-  category: string;
-  difficulty: "all" | Difficulty;
-  freshness: "all" | FreshnessStatus;
-  onCategoryChange: (value: string) => void;
-  onDifficultyChange: (value: "all" | Difficulty) => void;
-  onFreshnessChange: (value: "all" | FreshnessStatus) => void;
+  difficulties: string[];
+  filters: FilterValues;
+  freshnessOptions: string[];
+  hasActiveFilters: boolean;
+  onClearFilters: () => void;
+  onFilterChange: (key: FilterKey, value: string) => void;
+  platforms: string[];
+  safetyOptions: string[];
 };
-
-const difficulties: Array<"all" | Difficulty> = [
-  "all",
-  "beginner",
-  "intermediate",
-  "advanced",
-];
-
-const freshnessOptions: Array<"all" | FreshnessStatus> = [
-  "all",
-  "current",
-  "needs-review",
-  "stale",
-  "broken",
-];
 
 function label(value: string) {
   return value
@@ -34,64 +30,105 @@ function label(value: string) {
     .join(" ");
 }
 
+function FilterSelect({
+  labelText,
+  name,
+  onChange,
+  options,
+  value,
+}: {
+  labelText: string;
+  name: FilterKey;
+  onChange: (key: FilterKey, value: string) => void;
+  options: string[];
+  value: string;
+}) {
+  return (
+    <label className="block">
+      <span className="text-sm font-medium text-zinc-700">{labelText}</span>
+      <select
+        className="mt-2 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-950 shadow-sm outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-700/15"
+        onChange={(event) => onChange(name, event.target.value)}
+        value={value}
+      >
+        <option value="all">All {labelText.toLowerCase()}</option>
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {label(option)}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 export function WorkflowFilters({
+  audiences,
   categories,
-  category,
-  difficulty,
-  freshness,
-  onCategoryChange,
-  onDifficultyChange,
-  onFreshnessChange,
+  difficulties,
+  filters,
+  freshnessOptions,
+  hasActiveFilters,
+  onClearFilters,
+  onFilterChange,
+  platforms,
+  safetyOptions,
 }: WorkflowFiltersProps) {
   return (
-    <div className="grid gap-4 sm:grid-cols-3">
-      <label className="block">
-        <span className="text-sm font-medium text-zinc-700">Category</span>
-        <select
-          className="mt-2 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-950 shadow-sm outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-700/15"
-          onChange={(event) => onCategoryChange(event.target.value)}
-          value={category}
+    <div className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <FilterSelect
+          labelText="Category"
+          name="category"
+          onChange={onFilterChange}
+          options={categories}
+          value={filters.category}
+        />
+        <FilterSelect
+          labelText="Audience"
+          name="audience"
+          onChange={onFilterChange}
+          options={audiences}
+          value={filters.audience}
+        />
+        <FilterSelect
+          labelText="Difficulty"
+          name="difficulty"
+          onChange={onFilterChange}
+          options={difficulties}
+          value={filters.difficulty}
+        />
+        <FilterSelect
+          labelText="Freshness"
+          name="freshness"
+          onChange={onFilterChange}
+          options={freshnessOptions}
+          value={filters.freshness}
+        />
+        <FilterSelect
+          labelText="Safety"
+          name="safety"
+          onChange={onFilterChange}
+          options={safetyOptions}
+          value={filters.safety}
+        />
+        <FilterSelect
+          labelText="Platform"
+          name="platform"
+          onChange={onFilterChange}
+          options={platforms}
+          value={filters.platform}
+        />
+      </div>
+      {hasActiveFilters ? (
+        <button
+          className="text-sm font-semibold text-teal-800 hover:text-teal-900"
+          onClick={onClearFilters}
+          type="button"
         >
-          <option value="all">All categories</option>
-          {categories.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label className="block">
-        <span className="text-sm font-medium text-zinc-700">Difficulty</span>
-        <select
-          className="mt-2 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-950 shadow-sm outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-700/15"
-          onChange={(event) =>
-            onDifficultyChange(event.target.value as "all" | Difficulty)
-          }
-          value={difficulty}
-        >
-          {difficulties.map((option) => (
-            <option key={option} value={option}>
-              {option === "all" ? "All difficulties" : label(option)}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label className="block">
-        <span className="text-sm font-medium text-zinc-700">Freshness</span>
-        <select
-          className="mt-2 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-950 shadow-sm outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-700/15"
-          onChange={(event) =>
-            onFreshnessChange(event.target.value as "all" | FreshnessStatus)
-          }
-          value={freshness}
-        >
-          {freshnessOptions.map((option) => (
-            <option key={option} value={option}>
-              {option === "all" ? "All freshness" : label(option)}
-            </option>
-          ))}
-        </select>
-      </label>
+          Clear filters
+        </button>
+      ) : null}
     </div>
   );
 }

@@ -10,6 +10,10 @@ import type {
   WorkflowStatus,
 } from "@/types/workflow";
 
+export type SearchableWorkflow = Workflow & {
+  searchText?: string;
+};
+
 type WorkflowRow = {
   id: string;
   title: string;
@@ -46,6 +50,7 @@ type WorkflowQualityCheckRow = {
   workflow_id: string;
   position: number;
   label: string;
+  description: string | null;
 };
 
 function warnAndFallback(message: string) {
@@ -56,7 +61,7 @@ function mapWorkflow(
   workflow: WorkflowRow,
   steps: WorkflowStepRow[],
   checks: WorkflowQualityCheckRow[],
-): Workflow {
+): SearchableWorkflow {
   return {
     id: workflow.id,
     title: workflow.title,
@@ -85,6 +90,31 @@ function mapWorkflow(
       exampleOutput: step.example_output ?? undefined,
     })),
     qualityChecklist: checks.map((check) => check.label),
+    searchText: [
+      workflow.title,
+      workflow.description,
+      workflow.problem_solved,
+      workflow.category,
+      workflow.audience,
+      workflow.platform_tested_on,
+      workflow.difficulty,
+      workflow.category_risk,
+      workflow.context_setup,
+      workflow.example_input,
+      workflow.example_output,
+      workflow.learning_safe_mode,
+      workflow.freshness_status,
+      ...steps.flatMap((step) => [
+        step.title,
+        step.guidance ?? "",
+        step.prompt,
+        step.example_output ?? "",
+      ]),
+      ...checks.flatMap((check) => [
+        check.label,
+        check.description ?? "",
+      ]),
+    ].join(" "),
   };
 }
 
@@ -103,7 +133,7 @@ async function getWorkflowChildren(workflowIds: string[]) {
       .order("step_number", { ascending: true }),
     supabase
       .from("workflow_quality_checks")
-      .select("id, workflow_id, position, label")
+      .select("id, workflow_id, position, label, description")
       .in("workflow_id", workflowIds)
       .order("position", { ascending: true }),
   ]);

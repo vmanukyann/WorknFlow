@@ -5,17 +5,24 @@ import { getApprovedWorkflows } from "@/lib/workflows/queries";
 
 type WorkflowsPageProps = {
   searchParams?: Promise<{
+    audience?: string | string[];
+    category?: string | string[];
+    difficulty?: string | string[];
+    freshness?: string | string[];
+    platform?: string | string[];
+    safety?: string | string[];
     search?: string | string[];
   }>;
 };
+
+function readParam(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
 
 export default async function WorkflowsPage({
   searchParams,
 }: WorkflowsPageProps) {
   const resolvedSearchParams = await searchParams;
-  const search = Array.isArray(resolvedSearchParams?.search)
-    ? resolvedSearchParams.search[0]
-    : resolvedSearchParams?.search;
   const workflows = await getApprovedWorkflows();
 
   return (
@@ -30,8 +37,16 @@ export default async function WorkflowsPage({
       </section>
       <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
         <WorkflowLibrary
-          initialSearch={search ?? ""}
-          key={search ?? ""}
+          initialFilters={{
+            audience: readParam(resolvedSearchParams?.audience) ?? "",
+            category: readParam(resolvedSearchParams?.category) ?? "",
+            difficulty: readParam(resolvedSearchParams?.difficulty) ?? "",
+            freshness: readParam(resolvedSearchParams?.freshness) ?? "",
+            platform: readParam(resolvedSearchParams?.platform) ?? "",
+            safety: readParam(resolvedSearchParams?.safety) ?? "",
+            search: readParam(resolvedSearchParams?.search) ?? "",
+          }}
+          key={JSON.stringify(resolvedSearchParams ?? {})}
           workflows={workflows}
         />
       </section>
