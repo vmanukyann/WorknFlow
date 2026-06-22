@@ -15,10 +15,64 @@ type WorkflowRequestFormProps = {
 };
 
 type SubmissionState = "idle" | "submitting" | "success" | "error" | "local";
+type WorkflowRequestPayload = {
+  category_guess: string | null;
+  extra_context: string | null;
+  platform: string | null;
+  query: string;
+};
+type WorkflowRequestValidation =
+  | { data: WorkflowRequestPayload }
+  | { error: string };
+
+const QUERY_MIN_LENGTH = 3;
+const QUERY_MAX_LENGTH = 240;
+const SHORT_TEXT_MAX_LENGTH = 80;
+const EXTRA_CONTEXT_MAX_LENGTH = 1200;
 
 function optionalValue(value: FormDataEntryValue | null) {
   const trimmed = String(value ?? "").trim();
   return trimmed || null;
+}
+
+function validateWorkflowRequest(formData: FormData): WorkflowRequestValidation {
+  const query = String(formData.get("query") ?? "").trim();
+  const categoryGuess = optionalValue(formData.get("category_guess"));
+  const platform = optionalValue(formData.get("platform"));
+  const extraContext = optionalValue(formData.get("extra_context"));
+
+  if (query.length < QUERY_MIN_LENGTH || query.length > QUERY_MAX_LENGTH) {
+    return {
+      error: `Describe the workflow in ${QUERY_MIN_LENGTH} to ${QUERY_MAX_LENGTH} characters.`,
+    };
+  }
+
+  if (categoryGuess && categoryGuess.length > SHORT_TEXT_MAX_LENGTH) {
+    return {
+      error: `Category must be ${SHORT_TEXT_MAX_LENGTH} characters or fewer.`,
+    };
+  }
+
+  if (platform && platform.length > SHORT_TEXT_MAX_LENGTH) {
+    return {
+      error: `Platform must be ${SHORT_TEXT_MAX_LENGTH} characters or fewer.`,
+    };
+  }
+
+  if (extraContext && extraContext.length > EXTRA_CONTEXT_MAX_LENGTH) {
+    return {
+      error: `Extra context must be ${EXTRA_CONTEXT_MAX_LENGTH} characters or fewer.`,
+    };
+  }
+
+  return {
+    data: {
+      category_guess: categoryGuess,
+      extra_context: extraContext,
+      platform,
+      query,
+    },
+  };
 }
 
 export function WorkflowRequestForm({
@@ -26,10 +80,23 @@ export function WorkflowRequestForm({
   initialSource = "request_form",
 }: WorkflowRequestFormProps) {
   const [state, setState] = useState<SubmissionState>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+  const safeSource: RequestSource =
+    initialSource === "failed_search" ? "failed_search" : "request_form";
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
+    const formData = new FormData(form);
+    const validation = validateWorkflowRequest(formData);
+
+    setErrorMessage("");
+
+    if ("error" in validation) {
+      setErrorMessage(validation.error);
+      setState("error");
+      return;
+    }
 
     const supabase = createBrowserSupabaseClient();
     if (!supabase) {
@@ -37,26 +104,18 @@ export function WorkflowRequestForm({
       return;
     }
 
-    const formData = new FormData(form);
-    const query = String(formData.get("query") ?? "").trim();
-
-    if (!query) {
-      setState("error");
-      return;
-    }
-
     setState("submitting");
 
     const { error } = await supabase.from("workflow_requests").insert({
-      category_guess: optionalValue(formData.get("category_guess")),
-      extra_context: optionalValue(formData.get("extra_context")),
-      platform: optionalValue(formData.get("platform")),
-      query,
-      source: initialSource,
+      ...validation.data,
+      source: safeSource,
       status: "new",
     });
 
     if (error) {
+      setErrorMessage(
+        "Something went wrong. Please check the form and try again.",
+      );
       setState("error");
       return;
     }
@@ -67,7 +126,7 @@ export function WorkflowRequestForm({
 
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>
-      {initialSource === "failed_search" ? (
+      {safeSource === "failed_search" ? (
         <p className="text-sm font-medium text-teal-800">
           Requesting a workflow for your search.
         </p>
@@ -79,6 +138,8 @@ export function WorkflowRequestForm({
         <Input
           className="mt-2"
           defaultValue={initialQuery}
+          maxLength={QUERY_MAX_LENGTH}
+          minLength={QUERY_MIN_LENGTH}
           name="query"
           placeholder="Example: turn lab notes into practice questions"
           required
@@ -89,6 +150,7 @@ export function WorkflowRequestForm({
         <span className="text-sm font-medium text-zinc-700">Category</span>
         <Input
           className="mt-2"
+          maxLength={SHORT_TEXT_MAX_LENGTH}
           name="category_guess"
           placeholder="Studying, writing, STEM, coding, project planning..."
           type="text"
@@ -100,6 +162,7 @@ export function WorkflowRequestForm({
         </span>
         <Input
           className="mt-2"
+          maxLength={SHORT_TEXT_MAX_LENGTH}
           name="platform"
           placeholder="ChatGPT, Claude, Gemini, another tool..."
           type="text"
@@ -109,6 +172,7 @@ export function WorkflowRequestForm({
         <span className="text-sm font-medium text-zinc-700">Extra context</span>
         <Textarea
           className="mt-2"
+          maxLength={EXTRA_CONTEXT_MAX_LENGTH}
           name="extra_context"
           placeholder="What should the workflow avoid? What would a good result include?"
         />
@@ -129,7 +193,8 @@ export function WorkflowRequestForm({
       ) : null}
       {state === "error" ? (
         <p className="text-sm font-medium text-red-700">
-          Something went wrong. Please check the required field and try again.
+          {errorMessage ||
+            "Something went wrong. Please check the form and try again."}
         </p>
       ) : null}
       {state === "local" ? (

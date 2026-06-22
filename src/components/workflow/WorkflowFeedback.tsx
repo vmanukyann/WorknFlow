@@ -14,13 +14,24 @@ type WorkflowFeedbackProps = {
 
 type FeedbackState = "idle" | "submitting" | "success" | "error" | "local";
 
+const feedbackRatings = ["worked", "did-not-work"] as const;
+
 const uuidPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function isFeedbackRating(rating: string): rating is FeedbackRating {
+  return feedbackRatings.includes(rating as FeedbackRating);
+}
 
 export function WorkflowFeedback({ workflowId }: WorkflowFeedbackProps) {
   const [state, setState] = useState<FeedbackState>("idle");
 
-  async function submitFeedback(rating: FeedbackRating) {
+  async function submitFeedback(rating: string) {
+    if (!isFeedbackRating(rating)) {
+      setState("error");
+      return;
+    }
+
     if (!uuidPattern.test(workflowId)) {
       setState("local");
       return;

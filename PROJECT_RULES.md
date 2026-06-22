@@ -226,11 +226,14 @@ Phase 5.5 — Failed-search tracking
 Phase 6 — Admin panel MVP
 Phase 6.5 — Admin verification helper
 Phase 7 — Search + filters
-Phase 8 — Security pass
-Phase 9 — SEO metadata
-Phase 10 — Seed 10 workflows
-Phase 11 — Test with real users
-Phase 12 — Expand to 50 workflows
-Phase 13 — Soft launch
-Phase 14 — Gumroad workflow pack
-Phase 15 — Chrome side panel extension
+Phase 8: Security + abuse pass
+Phase 9: SEO + share metadata
+Phase 10: Seed 10 high-quality workflows
+Phase 11: Real-user testing pass
+Phase 12: Seed 50 workflows
+Phase 13: Soft launch
+Phase 14: Monetization experiment
+Phase 15: Chrome side panel / browser assistant
+Phase 16: Reputation + proof system
+Phase 17: Context packs / advanced workflow system
+Phase 18: Analytics + iteration loop

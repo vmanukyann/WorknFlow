@@ -71,6 +71,8 @@ function redirectWithError(path: string, error: unknown) {
 }
 
 function readableAdminError(message: string) {
+  const lowerMessage = message.toLowerCase();
+
   if (message.includes("workflow_steps_workflow_step_number_unique")) {
     return "A step with that number already exists for this workflow.";
   }
@@ -80,10 +82,18 @@ function readableAdminError(message: string) {
   }
 
   if (
-    message.toLowerCase().includes("permission denied") ||
-    message.toLowerCase().includes("row-level security")
+    lowerMessage.includes("permission denied") ||
+    lowerMessage.includes("row-level security")
   ) {
     return "Admin permission is required for that change.";
+  }
+
+  if (
+    lowerMessage.includes("check constraint") ||
+    lowerMessage.includes("violates") ||
+    lowerMessage.includes("too long")
+  ) {
+    return "That change conflicts with a database validation rule.";
   }
 
   return message;
