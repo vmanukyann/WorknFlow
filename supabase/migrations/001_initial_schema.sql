@@ -66,15 +66,16 @@ create table public.workflow_quality_checks (
 
 create table public.workflow_requests (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid references auth.users(id) on delete set null,
-  requested_workflow text not null,
-  use_case text,
-  source text not null default 'request-page',
+  query text not null,
+  category_guess text,
+  platform text,
+  extra_context text,
+  source text not null default 'request_form',
   status text not null default 'new',
+  user_id uuid references auth.users(id) on delete set null,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now(),
-  constraint workflow_requests_source_check check (source in ('request-page', 'failed-search', 'admin')),
-  constraint workflow_requests_status_check check (status in ('new', 'reviewing', 'planned', 'completed', 'declined'))
+  constraint workflow_requests_source_check check (source in ('request_form', 'failed_search')),
+  constraint workflow_requests_status_check check (status in ('new', 'reviewed', 'planned', 'created', 'rejected'))
 );
 
 create table public.workflow_feedback (
@@ -158,14 +159,15 @@ set search_path = public
 as $$
 begin
   if old.user_id is distinct from new.user_id
-    or old.requested_workflow is distinct from new.requested_workflow
-    or old.use_case is distinct from new.use_case
+    or old.query is distinct from new.query
+    or old.category_guess is distinct from new.category_guess
+    or old.platform is distinct from new.platform
+    or old.extra_context is distinct from new.extra_context
     or old.source is distinct from new.source
     or old.created_at is distinct from new.created_at then
-    raise exception 'workflow request updates may only change status and updated_at';
+    raise exception 'workflow request updates may only change status';
   end if;
 
-  new.updated_at = now();
   return new;
 end;
 $$;
@@ -232,7 +234,7 @@ on public.workflow_requests
 for insert
 with check (
   status = 'new'
-  and source in ('request-page', 'failed-search')
+  and source in ('request_form', 'failed_search')
   and (user_id is null or user_id = auth.uid())
 );
 
