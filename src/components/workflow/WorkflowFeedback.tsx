@@ -4,27 +4,81 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
-export function WorkflowFeedback() {
-  const [feedback, setFeedback] = useState<"worked" | "not-worked" | null>(null);
+type FeedbackRating = "worked" | "did-not-work";
+
+type WorkflowFeedbackProps = {
+  workflowId: string;
+};
+
+type FeedbackState = "idle" | "submitting" | "success" | "error" | "local";
+
+const uuidPattern =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+export function WorkflowFeedback({ workflowId }: WorkflowFeedbackProps) {
+  const [state, setState] = useState<FeedbackState>("idle");
+
+  async function submitFeedback(rating: FeedbackRating) {
+    if (!uuidPattern.test(workflowId)) {
+      setState("local");
+      return;
+    }
+
+    const supabase = createBrowserSupabaseClient();
+    if (!supabase) {
+      setState("local");
+      return;
+    }
+
+    setState("submitting");
+
+    const { error } = await supabase.from("workflow_feedback").insert({
+      rating,
+      workflow_id: workflowId,
+    });
+
+    setState(error ? "error" : "success");
+  }
 
   return (
     <Card className="p-5">
       <h2 className="text-lg font-semibold text-zinc-950">Did this run work?</h2>
       <p className="mt-2 text-sm leading-6 text-zinc-600">
-        Feedback stays local for now. Submission tracking will be connected in a later phase.
+        Share whether this verified workflow helped. Feedback is only submitted
+        for live Supabase workflow records.
       </p>
       <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-        <Button onClick={() => setFeedback("worked")} variant="secondary">
+        <Button
+          disabled={state === "submitting"}
+          onClick={() => submitFeedback("worked")}
+          variant="secondary"
+        >
           Worked for me
         </Button>
-        <Button onClick={() => setFeedback("not-worked")} variant="secondary">
+        <Button
+          disabled={state === "submitting"}
+          onClick={() => submitFeedback("did-not-work")}
+          variant="secondary"
+        >
           Did not work
         </Button>
       </div>
-      {feedback ? (
+      {state === "success" ? (
         <p className="mt-4 text-sm font-medium text-teal-800">
-          Thanks. This note will become real feedback once the backend is added.
+          Thanks. Your feedback was submitted.
+        </p>
+      ) : null}
+      {state === "error" ? (
+        <p className="mt-4 text-sm font-medium text-red-700">
+          Feedback could not be submitted. Please try again later.
+        </p>
+      ) : null}
+      {state === "local" ? (
+        <p className="mt-4 text-sm font-medium text-zinc-700">
+          Feedback is disabled for local fallback workflows until Supabase is
+          configured.
         </p>
       ) : null}
     </Card>

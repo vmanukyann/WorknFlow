@@ -9,6 +9,7 @@ import { WorkflowDetailHeader } from "@/components/workflow/WorkflowDetailHeader
 import { WorkflowFeedback } from "@/components/workflow/WorkflowFeedback";
 import { WorkflowMetaPanel } from "@/components/workflow/WorkflowMetaPanel";
 import { sampleWorkflows } from "@/data/sampleWorkflows";
+import { getApprovedWorkflowBySlug } from "@/lib/workflows/queries";
 import type { Workflow } from "@/types/workflow";
 
 type WorkflowPageProps = {
@@ -16,10 +17,6 @@ type WorkflowPageProps = {
     slug: string;
   }>;
 };
-
-function findWorkflow(slug: string) {
-  return sampleWorkflows.find((workflow) => workflow.slug === slug);
-}
 
 function formatWorkflowForCopy(workflow: Workflow) {
   const steps = workflow.steps
@@ -44,7 +41,7 @@ export async function generateMetadata({
   params,
 }: WorkflowPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const workflow = findWorkflow(slug);
+  const workflow = await getApprovedWorkflowBySlug(slug);
 
   if (!workflow) {
     return {
@@ -60,7 +57,7 @@ export async function generateMetadata({
 
 export default async function WorkflowDetailPage({ params }: WorkflowPageProps) {
   const { slug } = await params;
-  const workflow = findWorkflow(slug);
+  const workflow = await getApprovedWorkflowBySlug(slug);
 
   if (!workflow) {
     notFound();
@@ -160,7 +157,7 @@ export default async function WorkflowDetailPage({ params }: WorkflowPageProps) 
               </div>
             </div>
           </Card>
-          <WorkflowFeedback />
+          <WorkflowFeedback workflowId={workflow.id} />
         </div>
 
         <WorkflowMetaPanel

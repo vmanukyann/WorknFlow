@@ -57,6 +57,10 @@ Copy `.env.local.example` to `.env.local` for local environment variables. Supab
 
 Database migrations live in `supabase/migrations`. Phase 4 creates the Supabase schema and RLS policies only; frontend wiring comes in Phase 5.
 
+## Phase 5 Supabase Wiring
+
+Copy `.env.local.example` to `.env.local`, then add your Supabase URL and anon key. Apply the migrations separately in Supabase. When those public env vars are present, public workflow pages, workflow requests, and workflow feedback use Supabase with RLS; when they are missing, workflow browsing falls back to the hardcoded sample data for local development.
+
 ## Project Rules
 
 Before adding or changing features, read `PROJECT_RULES.md`. Do not add Supabase, auth, payments, extension code, marketplace features, saved workflows, creator submissions, or AI API calls in Phase 1.

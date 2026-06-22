@@ -1,7 +1,7 @@
 import { PageShell } from "@/components/layout/PageShell";
 import { SectionHeader } from "@/components/layout/SectionHeader";
 import { WorkflowLibrary } from "@/components/search/WorkflowLibrary";
-import { sampleWorkflows } from "@/data/sampleWorkflows";
+import { getApprovedWorkflows } from "@/lib/workflows/queries";
 
 type WorkflowsPageProps = {
   searchParams?: Promise<{
@@ -16,6 +16,7 @@ export default async function WorkflowsPage({
   const search = Array.isArray(resolvedSearchParams?.search)
     ? resolvedSearchParams.search[0]
     : resolvedSearchParams?.search;
+  const workflows = await getApprovedWorkflows();
 
   return (
     <PageShell>
@@ -31,7 +32,7 @@ export default async function WorkflowsPage({
         <WorkflowLibrary
           initialSearch={search ?? ""}
           key={search ?? ""}
-          workflows={sampleWorkflows}
+          workflows={workflows}
         />
       </section>
     </PageShell>
