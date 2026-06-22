@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import { FreshnessBadge } from "@/components/badges/FreshnessBadge";
 import { PageShell } from "@/components/layout/PageShell";
@@ -6,6 +7,15 @@ import { HomeSearch } from "@/components/search/HomeSearch";
 import { buttonClassName } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { sampleWorkflows } from "@/data/sampleWorkflows";
+
+export const metadata: Metadata = {
+  title: "WorknFlow — Tested AI Workflows",
+  description:
+    "WorknFlow is a library of tested AI workflows with prompts, examples, and checklists for school, coding, research, writing, and productivity.",
+  alternates: {
+    canonical: "/",
+  },
+};
 
 const suggestedSearches = [
   "Make flashcards from messy notes",

@@ -1,7 +1,30 @@
+import type { Metadata } from "next";
+
 import { PageShell } from "@/components/layout/PageShell";
 import { SectionHeader } from "@/components/layout/SectionHeader";
 import { WorkflowLibrary } from "@/components/search/WorkflowLibrary";
 import { getApprovedWorkflows } from "@/lib/workflows/queries";
+
+export const metadata: Metadata = {
+  title: "AI Workflow Library — WorknFlow",
+  description:
+    "Search tested AI workflows with prompts, examples, and checklists for school, coding, research, writing, and productivity.",
+  alternates: {
+    canonical: "/workflows",
+  },
+  openGraph: {
+    description:
+      "Search tested AI workflows with prompts, examples, and checklists.",
+    title: "AI Workflow Library — WorknFlow",
+    url: "/workflows",
+  },
+  twitter: {
+    card: "summary",
+    description:
+      "Search tested AI workflows with prompts, examples, and checklists.",
+    title: "AI Workflow Library — WorknFlow",
+  },
+};
 
 type WorkflowsPageProps = {
   searchParams?: Promise<{

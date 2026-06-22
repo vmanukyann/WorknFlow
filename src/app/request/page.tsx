@@ -1,7 +1,30 @@
+import type { Metadata } from "next";
+
 import { PageShell } from "@/components/layout/PageShell";
 import { SectionHeader } from "@/components/layout/SectionHeader";
 import { WorkflowRequestForm } from "@/components/request/WorkflowRequestForm";
 import { Card } from "@/components/ui/Card";
+
+export const metadata: Metadata = {
+  title: "Request a Workflow — WorknFlow",
+  description:
+    "Request a missing AI workflow so WorknFlow can consider adding tested prompts, examples, and checklists for it.",
+  alternates: {
+    canonical: "/request",
+  },
+  openGraph: {
+    description:
+      "Request a missing AI workflow for the WorknFlow library.",
+    title: "Request a Workflow — WorknFlow",
+    url: "/request",
+  },
+  twitter: {
+    card: "summary",
+    description:
+      "Request a missing AI workflow for the WorknFlow library.",
+    title: "Request a Workflow — WorknFlow",
+  },
+};
 
 type RequestPageProps = {
   searchParams?: Promise<{

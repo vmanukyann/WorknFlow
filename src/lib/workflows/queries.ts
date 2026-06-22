@@ -53,6 +53,12 @@ type WorkflowQualityCheckRow = {
   description: string | null;
 };
 
+type WorkflowSitemapRow = {
+  last_verified_at: string | null;
+  slug: string;
+  updated_at: string;
+};
+
 function warnAndFallback(message: string) {
   console.warn(`[workflows] ${message}. Falling back to sample workflows.`);
 }
@@ -227,5 +233,49 @@ export async function getApprovedWorkflowBySlug(slug: string) {
   } catch {
     warnAndFallback(`Unable to load workflow "${slug}"`);
     return fallbackWorkflow ?? null;
+  }
+}
+
+export async function getApprovedWorkflowSitemapEntries() {
+  const supabase = createServerSupabaseClient();
+
+  if (!supabase) {
+    return sampleWorkflows
+      .filter((workflow) => workflow.status === "approved")
+      .map((workflow) => ({
+        lastModified: workflow.lastVerifiedAt || undefined,
+        slug: workflow.slug,
+      }));
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("workflows")
+      .select("slug, updated_at, last_verified_at")
+      .eq("status", "approved")
+      .order("updated_at", { ascending: false });
+
+    if (error) {
+      warnAndFallback("Unable to load workflow sitemap entries");
+      return sampleWorkflows
+        .filter((workflow) => workflow.status === "approved")
+        .map((workflow) => ({
+          lastModified: workflow.lastVerifiedAt || undefined,
+          slug: workflow.slug,
+        }));
+    }
+
+    return ((data ?? []) as WorkflowSitemapRow[]).map((workflow) => ({
+      lastModified: workflow.updated_at || workflow.last_verified_at || undefined,
+      slug: workflow.slug,
+    }));
+  } catch {
+    warnAndFallback("Unable to load workflow sitemap entries");
+    return sampleWorkflows
+      .filter((workflow) => workflow.status === "approved")
+      .map((workflow) => ({
+        lastModified: workflow.lastVerifiedAt || undefined,
+        slug: workflow.slug,
+      }));
   }
 }

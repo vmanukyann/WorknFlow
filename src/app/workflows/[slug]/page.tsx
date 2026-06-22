@@ -37,16 +37,37 @@ export async function generateMetadata({
 }: WorkflowPageProps): Promise<Metadata> {
   const { slug } = await params;
   const workflow = await getApprovedWorkflowBySlug(slug);
+  const canonicalPath = `/workflows/${slug}`;
 
   if (!workflow) {
     return {
-      title: "Workflow not found | WorknFlow",
+      title: "Workflow not found — WorknFlow",
+      alternates: {
+        canonical: canonicalPath,
+      },
     };
   }
 
+  const description = workflow.description || workflow.problemSolved;
+  const title = `${workflow.title} — WorknFlow`;
+
   return {
-    title: `${workflow.title} | WorknFlow`,
-    description: workflow.description,
+    title,
+    description,
+    alternates: {
+      canonical: canonicalPath,
+    },
+    openGraph: {
+      description,
+      title,
+      type: "article",
+      url: canonicalPath,
+    },
+    twitter: {
+      card: "summary",
+      description,
+      title,
+    },
   };
 }
 
