@@ -63,6 +63,10 @@ Copy `.env.local.example` to `.env.local`, then add your Supabase URL and anon k
 
 Failed searches are only saved when a user submits a request; searches are not logged automatically.
 
+## Admin Setup
+
+Create a Supabase Auth user manually, then add a matching `profiles` row with `is_admin = true`. Log in at `/admin/login`. Do not expose service role keys in frontend code or tracked environment files.
+
 ## Project Rules
 
 Before adding or changing features, read `PROJECT_RULES.md`. Do not add Supabase, auth, payments, extension code, marketplace features, saved workflows, creator submissions, or AI API calls in Phase 1.
