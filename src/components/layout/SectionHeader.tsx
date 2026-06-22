@@ -8,7 +8,7 @@ export function SectionHeader({ eyebrow, title, description }: SectionHeaderProp
   return (
     <div className="max-w-2xl">
       {eyebrow ? (
-        <p className="text-sm font-semibold uppercase tracking-wide text-teal-800">
+        <p className="text-sm font-medium text-teal-800">
           {eyebrow}
         </p>
       ) : null}

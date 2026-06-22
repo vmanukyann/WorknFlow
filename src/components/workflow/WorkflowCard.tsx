@@ -1,10 +1,6 @@
 import Link from "next/link";
 
-import { DifficultyBadge } from "@/components/badges/DifficultyBadge";
 import { FreshnessBadge } from "@/components/badges/FreshnessBadge";
-import { LearningSafeBadge } from "@/components/badges/LearningSafeBadge";
-import { PlatformBadge } from "@/components/badges/PlatformBadge";
-import { RiskBadge } from "@/components/badges/RiskBadge";
 import { Card } from "@/components/ui/Card";
 import type { Workflow } from "@/types/workflow";
 
@@ -19,10 +15,8 @@ export function WorkflowCard({ workflow }: WorkflowCardProps) {
       href={`/workflows/${workflow.slug}`}
     >
       <Card className="flex h-full flex-col p-4 transition-colors group-hover:border-teal-700/40 sm:p-5">
-        <div className="flex items-start justify-between gap-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-teal-800">
-            {workflow.category}
-          </p>
+        <div className="flex items-start justify-between gap-3 text-sm">
+          <p className="font-medium text-teal-800">{workflow.category}</p>
           <FreshnessBadge status={workflow.freshnessStatus} />
         </div>
         <div className="mt-4 flex-1">
@@ -33,25 +27,30 @@ export function WorkflowCard({ workflow }: WorkflowCardProps) {
             {workflow.description}
           </p>
         </div>
-        <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-zinc-100 pt-4 text-xs">
+        <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-zinc-100 pt-4 text-sm">
           <div>
-            <dt className="font-medium text-zinc-500">Steps</dt>
-            <dd className="mt-1 font-semibold text-zinc-950">
-              {workflow.steps.length} prompts
-            </dd>
+            <dt className="text-zinc-500">Steps</dt>
+            <dd className="mt-1 font-medium text-zinc-950">{workflow.steps.length}</dd>
           </div>
           <div>
-            <dt className="font-medium text-zinc-500">Verified</dt>
-            <dd className="mt-1 font-semibold text-zinc-950">
-              {workflow.lastVerifiedAt}
+            <dt className="text-zinc-500">Tested on</dt>
+            <dd className="mt-1 font-medium text-zinc-950">
+              {workflow.platformTestedOn}
             </dd>
           </div>
         </dl>
-        <div className="mt-4 flex flex-wrap gap-2">
-          <LearningSafeBadge mode={workflow.learningSafeMode} />
-          <DifficultyBadge difficulty={workflow.difficulty} />
-          <RiskBadge risk={workflow.categoryRisk} />
-          <PlatformBadge platform={workflow.platformTestedOn} />
+        <div className="mt-4 border-t border-zinc-100 pt-4">
+          <p className="text-sm font-medium text-zinc-950">First steps</p>
+          <ol className="mt-2 space-y-1 text-sm leading-6 text-zinc-600">
+            {workflow.steps.slice(0, 2).map((step) => (
+              <li key={step.id}>{step.stepNumber}. {step.title}</li>
+            ))}
+          </ol>
+        </div>
+        <div className="mt-5">
+          <span className="text-sm font-semibold text-teal-800 group-hover:text-teal-900">
+            View workflow
+          </span>
         </div>
       </Card>
     </Link>

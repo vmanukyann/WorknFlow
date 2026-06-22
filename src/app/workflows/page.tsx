@@ -3,20 +3,36 @@ import { SectionHeader } from "@/components/layout/SectionHeader";
 import { WorkflowLibrary } from "@/components/search/WorkflowLibrary";
 import { sampleWorkflows } from "@/data/sampleWorkflows";
 
-export default function WorkflowsPage() {
+type WorkflowsPageProps = {
+  searchParams?: Promise<{
+    search?: string | string[];
+  }>;
+};
+
+export default async function WorkflowsPage({
+  searchParams,
+}: WorkflowsPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const search = Array.isArray(resolvedSearchParams?.search)
+    ? resolvedSearchParams.search[0]
+    : resolvedSearchParams?.search;
+
   return (
     <PageShell>
       <section className="border-b border-zinc-200 bg-white">
         <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
           <SectionHeader
-            description="Search the hardcoded reference library by task, category, audience, and context. Every result is a manually written workflow record with prompts, examples, and checks."
-            eyebrow="Workflow library"
-            title="A small library of inspectable AI workflows"
+            description="Search by what you need help doing. Each workflow shows the steps to copy, an example output, and a check before you trust the result."
+            title="Find a workflow that matches your task"
           />
         </div>
       </section>
       <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-        <WorkflowLibrary workflows={sampleWorkflows} />
+        <WorkflowLibrary
+          initialSearch={search ?? ""}
+          key={search ?? ""}
+          workflows={sampleWorkflows}
+        />
       </section>
     </PageShell>
   );

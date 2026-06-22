@@ -73,11 +73,8 @@ export default async function WorkflowDetailPage({ params }: WorkflowPageProps) 
         <div className="space-y-8">
           <section aria-labelledby="use-case">
             <Card className="p-5">
-              <p className="text-xs font-semibold uppercase tracking-wide text-teal-800">
-                Use case
-              </p>
-              <h2 className="mt-2 text-xl font-semibold text-zinc-950" id="use-case">
-                What this workflow helps with
+              <h2 className="text-xl font-semibold text-zinc-950" id="use-case">
+                What this helps with
               </h2>
               <p className="mt-3 text-sm leading-6 text-zinc-600">
                 {workflow.problemSolved}
@@ -87,11 +84,8 @@ export default async function WorkflowDetailPage({ params }: WorkflowPageProps) 
 
           <section aria-labelledby="before-start">
             <Card className="p-5">
-              <p className="text-xs font-semibold uppercase tracking-wide text-teal-800">
+              <h2 className="text-xl font-semibold text-zinc-950" id="before-start">
                 Before you start
-              </p>
-              <h2 className="mt-2 text-xl font-semibold text-zinc-950" id="before-start">
-                Context setup
               </h2>
               <p className="mt-3 text-sm leading-6 text-zinc-600">
                 {workflow.contextSetup}
@@ -101,15 +95,12 @@ export default async function WorkflowDetailPage({ params }: WorkflowPageProps) 
 
           <section className="space-y-4" aria-labelledby="prompt-steps">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-teal-800">
-                Run the workflow
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-950" id="prompt-steps">
-                Prompt steps in order
+              <h2 className="text-2xl font-semibold tracking-tight text-zinc-950" id="prompt-steps">
+                Copy the steps
               </h2>
               <p className="mt-2 text-sm leading-6 text-zinc-600">
-                Run these in order. Each step has a job, a prompt, and an output
-                signal to check.
+                Copy each prompt in order. Adjust the bracketed parts for your
+                own notes, draft, or idea.
               </p>
             </div>
             {workflow.steps.map((step) => (
@@ -119,50 +110,52 @@ export default async function WorkflowDetailPage({ params }: WorkflowPageProps) 
 
           <section className="space-y-4" aria-labelledby="good-output">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-teal-800">
+              <h2
+                className="text-2xl font-semibold tracking-tight text-zinc-950"
+                id="good-output"
+              >
                 What good output looks like
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-950" id="good-output">
-                Example input and output
               </h2>
             </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card className="p-5">
-              <h3 className="text-lg font-semibold text-zinc-950">Example input</h3>
-              <p className="mt-3 text-sm leading-6 text-zinc-600">
-                {workflow.exampleInput}
-              </p>
-            </Card>
-            <Card className="p-5">
-              <h3 className="text-lg font-semibold text-zinc-950">Example output</h3>
-              <p className="mt-3 text-sm leading-6 text-zinc-600">
-                {workflow.exampleOutput}
-              </p>
-            </Card>
-          </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Card className="p-5">
+                <h3 className="text-lg font-semibold text-zinc-950">
+                  Example input
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-zinc-600">
+                  {workflow.exampleInput}
+                </p>
+              </Card>
+              <Card className="p-5">
+                <h3 className="text-lg font-semibold text-zinc-950">
+                  Example output
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-zinc-600">
+                  {workflow.exampleOutput}
+                </p>
+              </Card>
+            </div>
           </section>
 
           <QualityChecklist items={workflow.qualityChecklist} />
           <Card className="p-5">
-            <p className="text-xs font-semibold uppercase tracking-wide text-teal-800">
-              When to use / when not to use
-            </p>
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <h2 className="text-lg font-semibold text-zinc-950">
                   Use this when
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-zinc-600">
-                  You want a structured way to use AI for {workflow.category.toLowerCase()} while keeping the output inspectable.
+                  You want help with {workflow.category.toLowerCase()} and will
+                  check the result before using it.
                 </p>
               </div>
               <div>
                 <h2 className="text-lg font-semibold text-zinc-950">
-                  Do not use this to
+                  Don&apos;t use this when
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-zinc-600">
-                  Skip your own judgment, invent facts, or submit AI output
-                  without checking it against the quality checklist.
+                  You need the AI to do the whole assignment for you, invent
+                  facts, or replace your own work.
                 </p>
               </div>
             </div>

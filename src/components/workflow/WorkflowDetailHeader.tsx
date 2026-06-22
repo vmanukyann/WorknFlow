@@ -2,7 +2,6 @@ import { DifficultyBadge } from "@/components/badges/DifficultyBadge";
 import { FreshnessBadge } from "@/components/badges/FreshnessBadge";
 import { LearningSafeBadge } from "@/components/badges/LearningSafeBadge";
 import { PlatformBadge } from "@/components/badges/PlatformBadge";
-import { RiskBadge } from "@/components/badges/RiskBadge";
 import type { Workflow } from "@/types/workflow";
 
 type WorkflowDetailHeaderProps = {
@@ -13,9 +12,7 @@ export function WorkflowDetailHeader({ workflow }: WorkflowDetailHeaderProps) {
   return (
     <div className="border-b border-zinc-200 bg-white">
       <div className="mx-auto max-w-6xl px-4 py-9 sm:px-6 lg:px-8">
-        <p className="text-sm font-semibold uppercase tracking-wide text-teal-800">
-          Workflow runbook / {workflow.category}
-        </p>
+        <p className="text-sm font-medium text-teal-800">{workflow.category}</p>
         <h1 className="mt-3 max-w-4xl text-3xl font-semibold tracking-tight text-zinc-950 sm:text-4xl">
           {workflow.title}
         </h1>
@@ -23,11 +20,10 @@ export function WorkflowDetailHeader({ workflow }: WorkflowDetailHeaderProps) {
           {workflow.description}
         </p>
         <div className="mt-6 flex flex-wrap gap-2">
-          <FreshnessBadge status={workflow.freshnessStatus} />
-          <LearningSafeBadge mode={workflow.learningSafeMode} />
-          <DifficultyBadge difficulty={workflow.difficulty} />
-          <RiskBadge risk={workflow.categoryRisk} />
           <PlatformBadge platform={workflow.platformTestedOn} />
+          <FreshnessBadge status={workflow.freshnessStatus} />
+          <DifficultyBadge difficulty={workflow.difficulty} />
+          <LearningSafeBadge mode={workflow.learningSafeMode} />
         </div>
       </div>
     </div>

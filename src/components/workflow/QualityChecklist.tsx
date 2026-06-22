@@ -7,12 +7,7 @@ type QualityChecklistProps = {
 export function QualityChecklist({ items }: QualityChecklistProps) {
   return (
     <Card className="p-5">
-      <p className="text-xs font-semibold uppercase tracking-wide text-teal-800">
-        Check before trusting
-      </p>
-      <h2 className="mt-2 text-xl font-semibold text-zinc-950">
-        Quality checklist
-      </h2>
+      <h2 className="text-xl font-semibold text-zinc-950">Check the result</h2>
       <ul className="mt-4 space-y-3">
         {items.map((item) => (
           <li className="flex gap-3 text-sm leading-6 text-zinc-700" key={item}>

@@ -31,7 +31,7 @@ export default function AboutPage() {
       <section className="border-b border-zinc-200 bg-white">
         <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
           <SectionHeader
-            description="WorknFlow is a small, manually verified library of AI workflow runbooks. It is built around evidence: what context to provide, which prompt steps to run, what output to expect, and how to judge quality."
+            description="WorknFlow is a small library of tested AI workflows. Each guide shows what to prepare, what to copy, an example result, and what to check."
             eyebrow="Trust"
             title="Workflows should be clear enough to evaluate"
           />

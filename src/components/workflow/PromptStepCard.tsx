@@ -14,9 +14,6 @@ export function PromptStepCard({ step }: PromptStepCardProps) {
             {step.stepNumber}
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-teal-800">
-              Runbook step
-            </p>
             <h3 className="mt-1 text-xl font-semibold text-zinc-950">
               {step.title}
             </h3>
@@ -24,7 +21,7 @@ export function PromptStepCard({ step }: PromptStepCardProps) {
           </div>
         </div>
         <div className="px-5 sm:pt-5">
-          <CopyButton text={step.promptText} />
+          <CopyButton label="Copy this step" text={step.promptText} />
         </div>
       </div>
       <pre className="mt-5 whitespace-pre-wrap border-y border-zinc-200 bg-zinc-50 px-5 py-4 text-sm leading-6 text-zinc-800">
