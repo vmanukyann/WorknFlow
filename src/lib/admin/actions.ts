@@ -66,8 +66,27 @@ function readOption<T extends readonly string[]>(
 }
 
 function redirectWithError(path: string, error: unknown) {
-  const message = error instanceof Error ? error.message : "Something went wrong.";
+  const message = error instanceof Error ? readableAdminError(error.message) : "Something went wrong.";
   redirect(`${path}?error=${encodeURIComponent(message)}`);
+}
+
+function readableAdminError(message: string) {
+  if (message.includes("workflow_steps_workflow_step_number_unique")) {
+    return "A step with that number already exists for this workflow.";
+  }
+
+  if (message.includes("workflow_quality_checks_workflow_position_unique")) {
+    return "A quality check with that position already exists for this workflow.";
+  }
+
+  if (
+    message.toLowerCase().includes("permission denied") ||
+    message.toLowerCase().includes("row-level security")
+  ) {
+    return "Admin permission is required for that change.";
+  }
+
+  return message;
 }
 
 function readWorkflowPayload(formData: FormData) {

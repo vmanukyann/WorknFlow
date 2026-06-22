@@ -6,25 +6,10 @@ WorknFlow is a verified AI workflow system. Every workflow is expected to includ
 
 ## Current Phase
 
-This repo is currently in Phase 1: project foundation.
-
-Included in this phase:
-
-- Next.js, TypeScript, Tailwind CSS, and App Router setup
-- Foundation folders
-- Core workflow TypeScript types
-- Hardcoded sample workflow data
-- Lightweight status/design tokens
-
-Not included in this phase:
-
-- Product homepage UI
-- Workflow cards or workflow detail pages
-- Supabase client code or database wiring
-- Auth
-- Payments
-- Chrome extension work
-- AI API calls
+This repo is in the MVP buildout. Public workflow browsing, workflow requests,
+feedback, Supabase RLS, and the admin workflow manager are wired for the current
+phase. Do not add accounts for normal visitors, payments, extension code,
+marketplace features, or AI API calls.
 
 ## Run Locally
 
@@ -51,11 +36,20 @@ npm run build
 
 ## Environment
 
-Copy `.env.local.example` to `.env.local` for local environment variables. Supabase placeholders are present for later phases only.
+Copy `.env.local.example` to `.env.local`, then add:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+Do not put a Supabase service role key in frontend code or tracked environment
+files.
 
 ## Database
 
-Database migrations live in `supabase/migrations`. Phase 4 creates the Supabase schema and RLS policies only; frontend wiring comes in Phase 5.
+Database migrations live in `supabase/migrations`. Apply them manually in
+Supabase before using live data. If Supabase automatic table exposure is
+disabled, `002_add_table_grants.sql` is required so RLS-protected anon and
+authenticated access works.
 
 ## Phase 5 Supabase Wiring
 
@@ -65,8 +59,13 @@ Failed searches are only saved when a user submits a request; searches are not l
 
 ## Admin Setup
 
-Create a Supabase Auth user manually, then add a matching `profiles` row with `is_admin = true`. Log in at `/admin/login`. Do not expose service role keys in frontend code or tracked environment files.
+Create a Supabase Auth user manually, then insert a matching `public.profiles`
+row with the Auth user `id`, email, and `is_admin = true`. Log in at
+`/admin/login`. Admin access is still enforced server-side through Supabase Auth,
+RLS, and `profiles.is_admin = true`.
 
 ## Project Rules
 
-Before adding or changing features, read `PROJECT_RULES.md`. Do not add Supabase, auth, payments, extension code, marketplace features, saved workflows, creator submissions, or AI API calls in Phase 1.
+Before adding or changing features, read `PROJECT_RULES.md`. Do not add payments,
+extension code, marketplace features, saved workflows, creator submissions, or AI
+API calls in the MVP.
