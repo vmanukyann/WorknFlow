@@ -8,9 +8,10 @@ import { QualityChecklist } from "@/components/workflow/QualityChecklist";
 import { WorkflowDetailHeader } from "@/components/workflow/WorkflowDetailHeader";
 import { WorkflowFeedback } from "@/components/workflow/WorkflowFeedback";
 import { WorkflowMetaPanel } from "@/components/workflow/WorkflowMetaPanel";
-import { sampleWorkflows } from "@/data/sampleWorkflows";
 import { getApprovedWorkflowBySlug } from "@/lib/workflows/queries";
 import type { Workflow } from "@/types/workflow";
+
+export const dynamic = "force-dynamic";
 
 type WorkflowPageProps = {
   params: Promise<{
@@ -29,12 +30,6 @@ function formatWorkflowForCopy(workflow: Workflow) {
   return `${workflow.title}\n\n${workflow.description}\n\nContext setup:\n${workflow.contextSetup}\n\nExample input:\n${workflow.exampleInput}\n\n${steps}\n\nExample output:\n${workflow.exampleOutput}\n\nQuality checklist:\n${workflow.qualityChecklist
     .map((item) => `- ${item}`)
     .join("\n")}`;
-}
-
-export function generateStaticParams() {
-  return sampleWorkflows.map((workflow) => ({
-    slug: workflow.slug,
-  }));
 }
 
 export async function generateMetadata({

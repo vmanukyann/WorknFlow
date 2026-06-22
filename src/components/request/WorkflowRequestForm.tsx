@@ -29,6 +29,7 @@ export function WorkflowRequestForm({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const form = event.currentTarget;
 
     const supabase = createBrowserSupabaseClient();
     if (!supabase) {
@@ -36,7 +37,7 @@ export function WorkflowRequestForm({
       return;
     }
 
-    const formData = new FormData(event.currentTarget);
+    const formData = new FormData(form);
     const query = String(formData.get("query") ?? "").trim();
 
     if (!query) {
@@ -60,7 +61,7 @@ export function WorkflowRequestForm({
       return;
     }
 
-    event.currentTarget.reset();
+    form.reset();
     setState("success");
   }
 
