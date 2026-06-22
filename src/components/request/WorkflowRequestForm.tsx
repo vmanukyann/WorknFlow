@@ -7,8 +7,11 @@ import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
+type RequestSource = "request_form" | "failed_search";
+
 type WorkflowRequestFormProps = {
   initialQuery?: string;
+  initialSource?: RequestSource;
 };
 
 type SubmissionState = "idle" | "submitting" | "success" | "error" | "local";
@@ -20,6 +23,7 @@ function optionalValue(value: FormDataEntryValue | null) {
 
 export function WorkflowRequestForm({
   initialQuery = "",
+  initialSource = "request_form",
 }: WorkflowRequestFormProps) {
   const [state, setState] = useState<SubmissionState>("idle");
 
@@ -47,7 +51,7 @@ export function WorkflowRequestForm({
       extra_context: optionalValue(formData.get("extra_context")),
       platform: optionalValue(formData.get("platform")),
       query,
-      source: "request_form",
+      source: initialSource,
       status: "new",
     });
 
@@ -62,6 +66,11 @@ export function WorkflowRequestForm({
 
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>
+      {initialSource === "failed_search" ? (
+        <p className="text-sm font-medium text-teal-800">
+          Requesting a workflow for your search.
+        </p>
+      ) : null}
       <label className="block">
         <span className="text-sm font-medium text-zinc-700">
           What are you trying to do?

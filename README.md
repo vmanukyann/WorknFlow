@@ -61,6 +61,8 @@ Database migrations live in `supabase/migrations`. Phase 4 creates the Supabase 
 
 Copy `.env.local.example` to `.env.local`, then add your Supabase URL and anon key. Apply the migrations separately in Supabase. When those public env vars are present, public workflow pages, workflow requests, and workflow feedback use Supabase with RLS; when they are missing, workflow browsing falls back to the hardcoded sample data for local development.
 
+Failed searches are only saved when a user submits a request; searches are not logged automatically.
+
 ## Project Rules
 
 Before adding or changing features, read `PROJECT_RULES.md`. Do not add Supabase, auth, payments, extension code, marketplace features, saved workflows, creator submissions, or AI API calls in Phase 1.

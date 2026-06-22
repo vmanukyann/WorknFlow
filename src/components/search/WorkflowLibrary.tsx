@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { FailedSearchPrompt } from "@/components/search/FailedSearchPrompt";
 import { SearchBar } from "@/components/search/SearchBar";
 import { WorkflowFilters } from "@/components/search/WorkflowFilters";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { WorkflowGrid } from "@/components/workflow/WorkflowGrid";
 import type { Difficulty, FreshnessStatus, Workflow } from "@/types/workflow";
 
@@ -58,6 +59,8 @@ export function WorkflowLibrary({
     });
   }, [category, difficulty, freshness, query, workflows]);
 
+  const trimmedQuery = query.trim();
+
   return (
     <div className="space-y-5">
       <div className="rounded-lg border border-zinc-200 bg-white shadow-[0_1px_2px_rgba(24,24,27,0.04)]">
@@ -88,6 +91,13 @@ export function WorkflowLibrary({
       </div>
       {filteredWorkflows.length > 0 ? (
         <WorkflowGrid workflows={filteredWorkflows} />
+      ) : trimmedQuery ? (
+        <EmptyState
+          actionHref={`/request?q=${encodeURIComponent(trimmedQuery)}&source=failed_search`}
+          actionLabel="Request this workflow"
+          description="Request it and I'll consider adding it."
+          title="Can't find this workflow?"
+        />
       ) : (
         <FailedSearchPrompt query={query} />
       )}

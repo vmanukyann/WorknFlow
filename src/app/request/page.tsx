@@ -6,14 +6,23 @@ import { Card } from "@/components/ui/Card";
 type RequestPageProps = {
   searchParams?: Promise<{
     q?: string | string[];
+    source?: string | string[];
   }>;
 };
+
+type RequestSource = "request_form" | "failed_search";
+
+function normalizeSource(source: string | string[] | undefined): RequestSource {
+  const value = Array.isArray(source) ? source[0] : source;
+  return value === "failed_search" ? "failed_search" : "request_form";
+}
 
 export default async function RequestPage({ searchParams }: RequestPageProps) {
   const resolvedSearchParams = await searchParams;
   const initialQuery = Array.isArray(resolvedSearchParams?.q)
     ? resolvedSearchParams.q[0]
     : resolvedSearchParams?.q;
+  const initialSource = normalizeSource(resolvedSearchParams?.source);
 
   return (
     <PageShell>
@@ -28,7 +37,10 @@ export default async function RequestPage({ searchParams }: RequestPageProps) {
       </section>
       <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
         <Card className="p-6">
-          <WorkflowRequestForm initialQuery={initialQuery ?? ""} />
+          <WorkflowRequestForm
+            initialQuery={initialQuery ?? ""}
+            initialSource={initialSource}
+          />
         </Card>
       </section>
     </PageShell>
