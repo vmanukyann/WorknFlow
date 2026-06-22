@@ -37,6 +37,20 @@ function requireText(formData: FormData, key: string) {
   return value;
 }
 
+function readNullableText(formData: FormData, key: string) {
+  return readString(formData, key) || null;
+}
+
+function readPositiveInteger(formData: FormData, key: string) {
+  const value = Number(readString(formData, key));
+
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new Error(`${key.replaceAll("_", " ")} must be a positive integer.`);
+  }
+
+  return value;
+}
+
 function readOption<T extends readonly string[]>(
   formData: FormData,
   key: string,
@@ -102,7 +116,7 @@ async function insertAuditLog({
   recordId,
   tableName,
 }: {
-  action: "create" | "update" | "status-change";
+  action: "create" | "update" | "delete" | "status-change";
   admin: AdminUser;
   metadata?: Record<string, unknown>;
   recordId?: string;
@@ -126,6 +140,48 @@ async function insertAuditLog({
     record_id: recordId,
     table_name: tableName,
   });
+}
+
+function readWorkflowChildContext(formData: FormData) {
+  return {
+    workflowId: requireText(formData, "workflow_id"),
+    workflowSlug: requireText(formData, "workflow_slug"),
+  };
+}
+
+function readWorkflowStepPayload(formData: FormData) {
+  return {
+    example_output: readNullableText(formData, "example_output"),
+    guidance: readNullableText(formData, "guidance"),
+    prompt: requireText(formData, "prompt"),
+    step_number: readPositiveInteger(formData, "step_number"),
+    title: requireText(formData, "title"),
+  };
+}
+
+function readWorkflowQualityCheckPayload(formData: FormData) {
+  return {
+    description: readNullableText(formData, "description"),
+    label: requireText(formData, "label"),
+    position: readPositiveInteger(formData, "position"),
+  };
+}
+
+function revalidateWorkflowEditPaths(workflowId: string, workflowSlug: string) {
+  revalidatePath("/admin");
+  revalidatePath("/admin/workflows");
+  revalidatePath(`/admin/workflows/${workflowId}/edit`);
+  revalidatePath("/workflows");
+  revalidatePath(`/workflows/${workflowSlug}`);
+}
+
+function redirectToWorkflowEdit(
+  workflowId: string,
+  searchParams: Record<string, string>,
+) {
+  const params = new URLSearchParams(searchParams);
+
+  redirect(`/admin/workflows/${workflowId}/edit?${params.toString()}`);
 }
 
 export async function loginAdminAction(formData: FormData) {
@@ -263,6 +319,236 @@ export async function updateWorkflowAction(formData: FormData) {
   revalidatePath("/admin/workflows");
   revalidatePath(`/admin/workflows/${id}/edit`);
   redirect(`/admin/workflows/${id}/edit?updated=1`);
+}
+
+export async function createWorkflowStepAction(formData: FormData) {
+  const { workflowId, workflowSlug } = readWorkflowChildContext(formData);
+
+  try {
+    const admin = await requireAdmin();
+    const supabase = await createAdminSupabaseClient();
+
+    if (!supabase) {
+      throw new Error("Supabase is not configured.");
+    }
+
+    const payload = {
+      ...readWorkflowStepPayload(formData),
+      workflow_id: workflowId,
+    };
+
+    const { data, error } = await supabase
+      .from("workflow_steps")
+      .insert(payload)
+      .select("id")
+      .single();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    await insertAuditLog({
+      action: "create",
+      admin,
+      metadata: { workflow_id: workflowId },
+      recordId: data.id,
+      tableName: "workflow_steps",
+    });
+  } catch (error) {
+    redirectWithError(`/admin/workflows/${workflowId}/edit`, error);
+  }
+
+  revalidateWorkflowEditPaths(workflowId, workflowSlug);
+  redirectToWorkflowEdit(workflowId, { stepsUpdated: "1" });
+}
+
+export async function updateWorkflowStepAction(formData: FormData) {
+  const id = requireText(formData, "id");
+  const { workflowId, workflowSlug } = readWorkflowChildContext(formData);
+
+  try {
+    const admin = await requireAdmin();
+    const supabase = await createAdminSupabaseClient();
+
+    if (!supabase) {
+      throw new Error("Supabase is not configured.");
+    }
+
+    const { error } = await supabase
+      .from("workflow_steps")
+      .update(readWorkflowStepPayload(formData))
+      .eq("id", id)
+      .eq("workflow_id", workflowId);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    await insertAuditLog({
+      action: "update",
+      admin,
+      metadata: { workflow_id: workflowId },
+      recordId: id,
+      tableName: "workflow_steps",
+    });
+  } catch (error) {
+    redirectWithError(`/admin/workflows/${workflowId}/edit`, error);
+  }
+
+  revalidateWorkflowEditPaths(workflowId, workflowSlug);
+  redirectToWorkflowEdit(workflowId, { stepsUpdated: "1" });
+}
+
+export async function deleteWorkflowStepAction(formData: FormData) {
+  const id = requireText(formData, "id");
+  const { workflowId, workflowSlug } = readWorkflowChildContext(formData);
+
+  try {
+    const admin = await requireAdmin();
+    const supabase = await createAdminSupabaseClient();
+
+    if (!supabase) {
+      throw new Error("Supabase is not configured.");
+    }
+
+    const { error } = await supabase
+      .from("workflow_steps")
+      .delete()
+      .eq("id", id)
+      .eq("workflow_id", workflowId);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    await insertAuditLog({
+      action: "delete",
+      admin,
+      metadata: { workflow_id: workflowId },
+      recordId: id,
+      tableName: "workflow_steps",
+    });
+  } catch (error) {
+    redirectWithError(`/admin/workflows/${workflowId}/edit`, error);
+  }
+
+  revalidateWorkflowEditPaths(workflowId, workflowSlug);
+  redirectToWorkflowEdit(workflowId, { stepsUpdated: "1" });
+}
+
+export async function createWorkflowQualityCheckAction(formData: FormData) {
+  const { workflowId, workflowSlug } = readWorkflowChildContext(formData);
+
+  try {
+    const admin = await requireAdmin();
+    const supabase = await createAdminSupabaseClient();
+
+    if (!supabase) {
+      throw new Error("Supabase is not configured.");
+    }
+
+    const payload = {
+      ...readWorkflowQualityCheckPayload(formData),
+      workflow_id: workflowId,
+    };
+
+    const { data, error } = await supabase
+      .from("workflow_quality_checks")
+      .insert(payload)
+      .select("id")
+      .single();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    await insertAuditLog({
+      action: "create",
+      admin,
+      metadata: { workflow_id: workflowId },
+      recordId: data.id,
+      tableName: "workflow_quality_checks",
+    });
+  } catch (error) {
+    redirectWithError(`/admin/workflows/${workflowId}/edit`, error);
+  }
+
+  revalidateWorkflowEditPaths(workflowId, workflowSlug);
+  redirectToWorkflowEdit(workflowId, { checksUpdated: "1" });
+}
+
+export async function updateWorkflowQualityCheckAction(formData: FormData) {
+  const id = requireText(formData, "id");
+  const { workflowId, workflowSlug } = readWorkflowChildContext(formData);
+
+  try {
+    const admin = await requireAdmin();
+    const supabase = await createAdminSupabaseClient();
+
+    if (!supabase) {
+      throw new Error("Supabase is not configured.");
+    }
+
+    const { error } = await supabase
+      .from("workflow_quality_checks")
+      .update(readWorkflowQualityCheckPayload(formData))
+      .eq("id", id)
+      .eq("workflow_id", workflowId);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    await insertAuditLog({
+      action: "update",
+      admin,
+      metadata: { workflow_id: workflowId },
+      recordId: id,
+      tableName: "workflow_quality_checks",
+    });
+  } catch (error) {
+    redirectWithError(`/admin/workflows/${workflowId}/edit`, error);
+  }
+
+  revalidateWorkflowEditPaths(workflowId, workflowSlug);
+  redirectToWorkflowEdit(workflowId, { checksUpdated: "1" });
+}
+
+export async function deleteWorkflowQualityCheckAction(formData: FormData) {
+  const id = requireText(formData, "id");
+  const { workflowId, workflowSlug } = readWorkflowChildContext(formData);
+
+  try {
+    const admin = await requireAdmin();
+    const supabase = await createAdminSupabaseClient();
+
+    if (!supabase) {
+      throw new Error("Supabase is not configured.");
+    }
+
+    const { error } = await supabase
+      .from("workflow_quality_checks")
+      .delete()
+      .eq("id", id)
+      .eq("workflow_id", workflowId);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    await insertAuditLog({
+      action: "delete",
+      admin,
+      metadata: { workflow_id: workflowId },
+      recordId: id,
+      tableName: "workflow_quality_checks",
+    });
+  } catch (error) {
+    redirectWithError(`/admin/workflows/${workflowId}/edit`, error);
+  }
+
+  revalidateWorkflowEditPaths(workflowId, workflowSlug);
+  redirectToWorkflowEdit(workflowId, { checksUpdated: "1" });
 }
 
 export async function updateRequestStatusAction(formData: FormData) {

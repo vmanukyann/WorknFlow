@@ -100,12 +100,12 @@ export async function getWorkflowChildren(id: string): Promise<WorkflowChildren>
   const [stepsResult, checksResult] = await Promise.all([
     supabase
       .from("workflow_steps")
-      .select("id, step_number, title")
+      .select("id, workflow_id, step_number, title, guidance, prompt, example_output")
       .eq("workflow_id", id)
       .order("step_number", { ascending: true }),
     supabase
       .from("workflow_quality_checks")
-      .select("id, position, label")
+      .select("id, workflow_id, position, label, description")
       .eq("workflow_id", id)
       .order("position", { ascending: true }),
   ]);

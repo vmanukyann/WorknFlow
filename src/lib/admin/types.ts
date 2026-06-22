@@ -79,12 +79,18 @@ export type AdminFeedback = {
 export type WorkflowChildren = {
   steps: {
     id: string;
+    workflow_id: string;
     step_number: number;
     title: string;
+    guidance: string | null;
+    prompt: string;
+    example_output: string | null;
   }[];
   checks: {
     id: string;
+    workflow_id: string;
     position: number;
     label: string;
+    description: string | null;
   }[];
 };
