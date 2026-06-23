@@ -57,8 +57,8 @@ export function WorkflowFeedback({ workflowId }: WorkflowFeedbackProps) {
     <Card className="p-5">
       <h2 className="text-lg font-semibold text-zinc-950">Did this run work?</h2>
       <p className="mt-2 text-sm leading-6 text-zinc-600">
-        Share whether this verified workflow helped. Feedback is only submitted
-        for live Supabase workflow records.
+        Share whether the prompts produced a useful result. Feedback is only
+        submitted for live Supabase workflow records.
       </p>
       <div className="mt-4 flex flex-col gap-3 sm:flex-row">
         <Button

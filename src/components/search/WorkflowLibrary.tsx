@@ -185,6 +185,9 @@ export function WorkflowLibrary({
     setFilters(defaultFilters);
   }
 
+  const resultLabel =
+    filteredWorkflows.length === 1 ? "workflow shown" : "workflows shown";
+
   if (workflows.length === 0) {
     return (
       <EmptyState
@@ -199,9 +202,17 @@ export function WorkflowLibrary({
       <div className="rounded-lg border border-zinc-200 bg-white shadow-[0_1px_2px_rgba(24,24,27,0.04)]">
         <div className="border-b border-zinc-200 bg-zinc-50 px-4 py-3 sm:px-5">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm font-semibold text-zinc-950">Search workflows</p>
+            <div>
+              <p className="text-sm font-semibold text-zinc-950">
+                Search the library
+              </p>
+              <p className="mt-1 text-sm text-zinc-500">
+                Match workflows by task, prompt text, examples, and checklist
+                labels.
+              </p>
+            </div>
             <p className="text-sm text-zinc-500">
-              {filteredWorkflows.length} of {workflows.length} workflows shown
+              {filteredWorkflows.length} of {workflows.length} {resultLabel}
             </p>
           </div>
         </div>
@@ -231,14 +242,14 @@ export function WorkflowLibrary({
         <EmptyState
           actionHref={`/request?q=${encodeURIComponent(trimmedQuery)}&source=failed_search`}
           actionLabel="Request this workflow"
-          description="Request it and I'll consider adding it."
+          description="Send a request only if this is a workflow you actually want added."
           title="Can't find this workflow?"
         />
       ) : (
         <EmptyState
           actionHref="/workflows"
           actionLabel="Clear filters"
-          description="Try a broader category, audience, difficulty, safety, freshness, or platform."
+          description="Try fewer filters or broaden the platform, difficulty, safety, or freshness choices."
           title="No workflows match these filters."
         />
       )}

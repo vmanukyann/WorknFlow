@@ -87,7 +87,7 @@ export default async function WorkflowDetailPage({ params }: WorkflowPageProps) 
           <section aria-labelledby="use-case">
             <Card className="p-5">
               <h2 className="text-xl font-semibold text-zinc-950" id="use-case">
-                What this helps with
+                What this workflow helps with
               </h2>
               <p className="mt-3 text-sm leading-6 text-zinc-600">
                 {workflow.problemSolved}
@@ -109,11 +109,11 @@ export default async function WorkflowDetailPage({ params }: WorkflowPageProps) 
           <section className="space-y-4" aria-labelledby="prompt-steps">
             <div>
               <h2 className="text-2xl font-semibold tracking-tight text-zinc-950" id="prompt-steps">
-                Copy the steps
+                Copy the prompts in order
               </h2>
               <p className="mt-2 text-sm leading-6 text-zinc-600">
-                Copy each prompt in order. Adjust the bracketed parts for your
-                own notes, draft, or idea.
+                Replace the bracketed parts with your own notes, draft, or idea.
+                Run one prompt at a time so you can check the result as you go.
               </p>
             </div>
             {workflow.steps.map((step) => (
@@ -127,8 +127,12 @@ export default async function WorkflowDetailPage({ params }: WorkflowPageProps) 
                 className="text-2xl font-semibold tracking-tight text-zinc-950"
                 id="good-output"
               >
-                What good output looks like
+                Example input and output
               </h2>
+              <p className="mt-2 text-sm leading-6 text-zinc-600">
+                Use the example to understand the shape of a useful answer, not
+                as a promise that every run will look identical.
+              </p>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               <Card className="p-5">
@@ -159,7 +163,7 @@ export default async function WorkflowDetailPage({ params }: WorkflowPageProps) 
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-zinc-600">
                   You want help with {workflow.category.toLowerCase()} and will
-                  check the result before using it.
+                  review the result before using it.
                 </p>
               </div>
               <div>

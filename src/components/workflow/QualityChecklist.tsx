@@ -8,6 +8,9 @@ export function QualityChecklist({ items }: QualityChecklistProps) {
   return (
     <Card className="p-5">
       <h2 className="text-xl font-semibold text-zinc-950">Check the result</h2>
+      <p className="mt-2 text-sm leading-6 text-zinc-600">
+        Use this list before you trust, submit, ship, or reuse the output.
+      </p>
       <ul className="mt-4 space-y-3">
         {items.map((item) => (
           <li className="flex gap-3 text-sm leading-6 text-zinc-700" key={item}>

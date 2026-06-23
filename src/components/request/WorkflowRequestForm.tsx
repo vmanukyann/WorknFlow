@@ -127,13 +127,22 @@ export function WorkflowRequestForm({
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>
       {safeSource === "failed_search" ? (
-        <p className="text-sm font-medium text-teal-800">
-          Requesting a workflow for your search.
-        </p>
+        <div className="rounded-lg border border-teal-200 bg-teal-50 p-3">
+          <p className="text-sm font-medium text-teal-900">
+            Requesting a workflow for your search.
+          </p>
+          <p className="mt-1 text-sm leading-6 text-teal-900/80">
+            The search text is prefilled below. Submit only if you want this
+            missing workflow considered.
+          </p>
+        </div>
       ) : null}
       <label className="block">
         <span className="text-sm font-medium text-zinc-700">
-          What are you trying to do?
+          Workflow you need
+        </span>
+        <span className="mt-1 block text-xs leading-5 text-zinc-500">
+          Describe the task in plain language.
         </span>
         <Input
           className="mt-2"
@@ -148,6 +157,9 @@ export function WorkflowRequestForm({
       </label>
       <label className="block">
         <span className="text-sm font-medium text-zinc-700">Category</span>
+        <span className="mt-1 block text-xs leading-5 text-zinc-500">
+          Optional: planning, coding, debugging, review, testing, or shipping.
+        </span>
         <Input
           className="mt-2"
           maxLength={SHORT_TEXT_MAX_LENGTH}
@@ -160,6 +172,9 @@ export function WorkflowRequestForm({
         <span className="text-sm font-medium text-zinc-700">
           What platform do you use?
         </span>
+        <span className="mt-1 block text-xs leading-5 text-zinc-500">
+          Optional: the AI tool or platform you expect to use.
+        </span>
         <Input
           className="mt-2"
           maxLength={SHORT_TEXT_MAX_LENGTH}
@@ -170,6 +185,9 @@ export function WorkflowRequestForm({
       </label>
       <label className="block">
         <span className="text-sm font-medium text-zinc-700">Extra context</span>
+        <span className="mt-1 block text-xs leading-5 text-zinc-500">
+          Optional: what the workflow should include, avoid, or help you check.
+        </span>
         <Textarea
           className="mt-2"
           maxLength={EXTRA_CONTEXT_MAX_LENGTH}
@@ -179,8 +197,8 @@ export function WorkflowRequestForm({
       </label>
       <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4">
         <p className="text-sm leading-6 text-zinc-600">
-          Share the workflow you need. WorknFlow stores only this request text so
-          future workflows can be prioritized.
+          WorknFlow uses requests to decide which workflows should be written
+          and tested next. Searches are not saved automatically.
         </p>
       </div>
       <Button disabled={state === "submitting"} type="submit">

@@ -30,6 +30,15 @@ function label(value: string) {
     .join(" ");
 }
 
+const filterHelp: Record<FilterKey, string> = {
+  audience: "Who the workflow is written for.",
+  category: "The kind of task or problem.",
+  difficulty: "How much setup or judgment it needs.",
+  freshness: "How recently it should be trusted.",
+  platform: "Where the workflow was tested.",
+  safety: "Whether it supports learning-safe use.",
+};
+
 function FilterSelect({
   labelText,
   name,
@@ -43,10 +52,13 @@ function FilterSelect({
   options: string[];
   value: string;
 }) {
+  const helpId = `${name}-filter-help`;
+
   return (
     <label className="block">
       <span className="text-sm font-medium text-zinc-700">{labelText}</span>
       <select
+        aria-describedby={helpId}
         className="mt-2 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-950 shadow-sm outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-700/15"
         onChange={(event) => onChange(name, event.target.value)}
         value={value}
@@ -58,6 +70,9 @@ function FilterSelect({
           </option>
         ))}
       </select>
+      <span className="mt-1 block text-xs leading-5 text-zinc-500" id={helpId}>
+        {filterHelp[name]}
+      </span>
     </label>
   );
 }
@@ -76,6 +91,25 @@ export function WorkflowFilters({
 }: WorkflowFiltersProps) {
   return (
     <div className="space-y-4">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold text-zinc-950">
+            Filter by trust signals
+          </p>
+          <p className="mt-1 text-sm text-zinc-500">
+            Narrow the library without changing how search works.
+          </p>
+        </div>
+        {hasActiveFilters ? (
+          <button
+            className="text-left text-sm font-semibold text-teal-800 hover:text-teal-900"
+            onClick={onClearFilters}
+            type="button"
+          >
+            Clear search and filters
+          </button>
+        ) : null}
+      </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <FilterSelect
           labelText="Category"
@@ -120,15 +154,6 @@ export function WorkflowFilters({
           value={filters.platform}
         />
       </div>
-      {hasActiveFilters ? (
-        <button
-          className="text-sm font-semibold text-teal-800 hover:text-teal-900"
-          onClick={onClearFilters}
-          type="button"
-        >
-          Clear filters
-        </button>
-      ) : null}
     </div>
   );
 }

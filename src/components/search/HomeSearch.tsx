@@ -25,19 +25,19 @@ export function HomeSearch() {
   return (
     <form className="mt-8" onSubmit={handleSubmit}>
       <label className="text-sm font-medium text-zinc-700" htmlFor="home-search">
-        What are you trying to do?
+        What workflow do you need?
       </label>
       <div className="mt-2 flex flex-col gap-3 sm:flex-row">
         <Input
           className="h-12 text-base"
           id="home-search"
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Make flashcards from messy notes"
+          placeholder="Debug an error with context"
           type="search"
           value={query}
         />
         <Button className="h-12 px-5" type="submit">
-          Search
+          Search workflows
         </Button>
       </div>
     </form>

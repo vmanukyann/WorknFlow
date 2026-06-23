@@ -14,6 +14,9 @@ export function PromptStepCard({ step }: PromptStepCardProps) {
             {step.stepNumber}
           </div>
           <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+              Prompt {step.stepNumber}
+            </p>
             <h3 className="mt-1 text-xl font-semibold text-zinc-950">
               {step.title}
             </h3>
@@ -21,18 +24,27 @@ export function PromptStepCard({ step }: PromptStepCardProps) {
           </div>
         </div>
         <div className="px-5 sm:pt-5">
-          <CopyButton label="Copy this step" text={step.promptText} />
+          <CopyButton label="Copy prompt" text={step.promptText} />
         </div>
       </div>
-      <pre className="mt-5 whitespace-pre-wrap border-y border-zinc-200 bg-zinc-50 px-5 py-4 text-sm leading-6 text-zinc-800">
-        {step.promptText}
-      </pre>
+      <div className="mt-5 border-y border-zinc-200 bg-zinc-50">
+        <div className="border-b border-zinc-200 px-5 py-2">
+          <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+            Copyable prompt
+          </p>
+        </div>
+        <pre className="whitespace-pre-wrap px-5 py-4 text-sm leading-6 text-zinc-800">
+          {step.promptText}
+        </pre>
+      </div>
       {step.exampleOutput ? (
         <div className="p-5">
           <h4 className="text-sm font-semibold text-zinc-950">
-            Output signal to look for
+            What to look for in the output
           </h4>
-          <p className="mt-2 text-sm leading-6 text-zinc-600">{step.exampleOutput}</p>
+          <p className="mt-2 text-sm leading-6 text-zinc-600">
+            {step.exampleOutput}
+          </p>
         </div>
       ) : null}
     </article>

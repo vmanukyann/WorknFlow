@@ -8,20 +8,20 @@ import { getApprovedWorkflows } from "@/lib/workflows/queries";
 export const metadata: Metadata = {
   title: "AI Workflow Library — WorknFlow",
   description:
-    "Search tested AI workflows with prompts, examples, and checklists for school, coding, research, writing, and productivity.",
+    "Search tested AI workflows for planning, coding, debugging, reviewing, and shipping with AI tools.",
   alternates: {
     canonical: "/workflows",
   },
   openGraph: {
     description:
-      "Search tested AI workflows with prompts, examples, and checklists.",
+      "Search tested AI workflows for planning, coding, debugging, and shipping.",
     title: "AI Workflow Library — WorknFlow",
     url: "/workflows",
   },
   twitter: {
     card: "summary",
     description:
-      "Search tested AI workflows with prompts, examples, and checklists.",
+      "Search tested AI workflows for planning, coding, debugging, and shipping.",
     title: "AI Workflow Library — WorknFlow",
   },
 };
@@ -53,8 +53,10 @@ export default async function WorkflowsPage({
       <section className="border-b border-zinc-200 bg-white">
         <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
           <SectionHeader
-            description="Search by what you need help doing. Each workflow shows the steps to copy, an example output, and a check before you trust the result."
-            title="Find a workflow that matches your task"
+            as="h1"
+            description="Search tested builder workflows by task. Each result includes prompts, examples, freshness, and a checklist so you can judge the output before using it."
+            eyebrow="Workflow library"
+            title="Find a tested workflow for building with AI"
           />
         </div>
       </section>

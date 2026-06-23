@@ -11,11 +11,13 @@ type SearchBarProps = {
 export function SearchBar({
   value,
   onChange,
-  placeholder = "Search workflows",
+  placeholder = "Search planning, coding, debugging, review...",
 }: SearchBarProps) {
   return (
     <label className="block">
-      <span className="text-sm font-medium text-zinc-700">Search</span>
+      <span className="text-sm font-medium text-zinc-700">
+        Search workflows
+      </span>
       <Input
         className="mt-2"
         onChange={(event) => onChange(event.target.value)}
